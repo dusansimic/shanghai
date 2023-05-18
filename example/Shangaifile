@@ -1,0 +1,18 @@
+tree:
+  alps:
+    alps-py:
+    alps-node:
+
+images:
+  alps:
+    tag: example.com/alps:latest
+    containerfile: alps/Containerfile
+    context: alps
+  alps-py:
+    tag: example.com/alps-py:latest
+    containerfile: alps-py/Containerfile
+    context: alps-py
+  alps-node:
+    tag: example.com/alps-node:latest
+    containerfile: alps-node/Containerfile
+    context: alps-node
