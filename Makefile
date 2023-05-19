@@ -1,8 +1,9 @@
 COMPILER=go
 GO=$(COMPILER)
+PROGRAM=shanghai
 
-shg:
-	$(GO) build -o shg cmd.go
+$(PROGRAM):
+	$(GO) build $(PROGRAM).go
 
 clean:
-	rm -f shg
+	rm -f $(PROGRAM)

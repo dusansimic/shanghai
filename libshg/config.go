@@ -1,4 +1,4 @@
-package shanghai
+package libshg
 
 import (
 	"fmt"
