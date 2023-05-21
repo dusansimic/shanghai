@@ -10,7 +10,7 @@ import (
 
 func init() {
 	rootCmd.AddCommand(buildCmd)
-	buildCmd.Flags().StringVarP(&file, "file", "f", "Shangaifile", "Shangaifile to use")
+	buildCmd.Flags().StringVarP(&file, "file", "f", "Shanghaifile", "Shangaifile to use")
 	buildCmd.MarkFlagFilename("file", "shg", "yaml", "yml")
 	buildCmd.Flags().BoolVarP(&check, "check", "c", false, "check Shangaifile for errors")
 }
@@ -38,7 +38,7 @@ func command(cmd *cobra.Command, args []string) {
 
 	file, err := libshg.ReadShanghaifile(file)
 	if err != nil {
-		fmt.Println(fmt.Errorf("failed to read Shangaifile: %w", err))
+		fmt.Println(fmt.Errorf("failed to read Shanghaifile: %w", err))
 		os.Exit(1)
 	}
 
