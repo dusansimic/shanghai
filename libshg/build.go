@@ -18,45 +18,8 @@ func BuildImages(c *Config, f *Shanghaifile, i string) error {
 	}
 
 	if stExists {
-		if err := walkTreeToBuildNodes(st, f.Images, c.Engine); err != nil {
+		if err := walkTreeAction(st, f.Images, c.Engine, buildImage); err != nil {
 			return fmt.Errorf("failed to build images: %w", err)
-		}
-	}
-
-	return nil
-}
-
-func findSubtree(f *Shanghaifile, i string) (Node, bool) {
-	return walkTreeToFindSubtree(f.Tree, i)
-}
-
-// walkTreeToFindSubtree walks the tree to find a node
-func walkTreeToFindSubtree(t Node, i string) (Node, bool) {
-	if _, ok := t[i]; ok {
-		if t[i] == nil {
-			return nil, false
-		}
-		return t[i].(Node), true
-	}
-
-	for st := range t {
-		if _, ok := t[st].(Node); ok {
-			return walkTreeToFindSubtree(t[st].(Node), i)
-		}
-	}
-
-	return nil, false
-}
-
-func walkTreeToBuildNodes(t Node, is MapOfImages, e string) error {
-	for k := range t {
-		if err := buildImage(is[k], e); err != nil {
-			return fmt.Errorf("failed to build image '%s': %w", k, err)
-		}
-
-		// Check if this node is also a subtree
-		if _, ok := t[k].(Node); ok {
-			walkTreeToBuildNodes(t[k].(Node), is, e)
 		}
 	}
 

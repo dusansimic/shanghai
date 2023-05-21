@@ -9,12 +9,12 @@ import (
 )
 
 func init() {
-	rootCmd.AddCommand(buildCmd)
+	rootCmd.AddCommand(pushCmd)
 }
 
-var buildCmd = &cobra.Command{
-	Use:   "build <image>",
-	Short: "Build hierarchies of container images",
+var pushCmd = &cobra.Command{
+	Use:   "push <image>",
+	Short: "Push hierarchies of container images",
 	Args:  cobra.MinimumNArgs(1),
 	ValidArgsFunction: func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
 		l, err := libshg.ListImages(file)
@@ -23,10 +23,10 @@ var buildCmd = &cobra.Command{
 		}
 		return l, cobra.ShellCompDirectiveNoFileComp
 	},
-	Run: buildCommand,
+	Run: pushCommand,
 }
 
-func buildCommand(cmd *cobra.Command, args []string) {
+func pushCommand(cmd *cobra.Command, args []string) {
 	image := args[0]
 
 	file, err := libshg.ReadShanghaifile(file)
@@ -52,8 +52,8 @@ func buildCommand(cmd *cobra.Command, args []string) {
 		os.Exit(1)
 	}
 
-	if err := libshg.BuildImages(c, file, image); err != nil {
-		fmt.Println(fmt.Errorf("failed to build image: %w", err))
+	if err := libshg.PushImages(c, file, image); err != nil {
+		fmt.Println(fmt.Errorf("failed to push image: %w", err))
 		os.Exit(1)
 	}
 }

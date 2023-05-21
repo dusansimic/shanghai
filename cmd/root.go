@@ -2,6 +2,12 @@ package cmd
 
 import "github.com/spf13/cobra"
 
+func init() {
+	rootCmd.PersistentFlags().StringVarP(&file, "file", "f", "Shanghaifile", "Shangaifile to use")
+}
+
+var file string
+
 var rootCmd = &cobra.Command{
 	Use: "shanghai",
 	Run: func(cmd *cobra.Command, args []string) {
