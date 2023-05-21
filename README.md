@@ -19,7 +19,11 @@ Building 'example.com/alps-node:latest'  ✔
 ## Roadmap
 
 - [x] Build images
-- [ ] Push images
+- [x] Push images
+- [ ] GitHub Actions
+  - [ ] Static binaries
+  - [ ] Completion files
+- [ ] YAML file schema
 
 ## License
 
