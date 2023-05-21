@@ -12,15 +12,6 @@ func init() {
 	rootCmd.AddCommand(buildCmd)
 	buildCmd.Flags().StringVarP(&file, "file", "f", "Shangaifile", "Shangaifile to use")
 	buildCmd.MarkFlagFilename("file", "shg", "yaml", "yml")
-	buildCmd.Flags().StringVarP(&image, "image", "i", "", "image to build (required)")
-	buildCmd.MarkFlagRequired("image")
-	buildCmd.RegisterFlagCompletionFunc("image", func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
-		l, err := libshg.ListImages(file)
-		if err != nil {
-			return nil, cobra.ShellCompDirectiveError
-		}
-		return l, cobra.ShellCompDirectiveNoFileComp
-	})
 	buildCmd.Flags().BoolVarP(&check, "check", "c", false, "check Shangaifile for errors")
 }
 
@@ -29,12 +20,22 @@ var image string
 var check bool
 
 var buildCmd = &cobra.Command{
-	Use:   "build",
+	Use:   "build <image>",
 	Short: "Build hierarchies of container images",
-	Run:   command,
+	Args:  cobra.MinimumNArgs(1),
+	ValidArgsFunction: func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
+		l, err := libshg.ListImages(file)
+		if err != nil {
+			return nil, cobra.ShellCompDirectiveError
+		}
+		return l, cobra.ShellCompDirectiveNoFileComp
+	},
+	Run: command,
 }
 
 func command(cmd *cobra.Command, args []string) {
+	image = args[0]
+
 	file, err := libshg.ReadShanghaifile(file)
 	if err != nil {
 		fmt.Println(fmt.Errorf("failed to read Shangaifile: %w", err))
