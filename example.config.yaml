@@ -1,0 +1,4 @@
+# This is an example of the config file for shanghai. The config file is required and needs to
+# exist on path $XDG_CONFIG_HOME/shanghai/config.yaml
+
+engine: docker # binary for the container engine, cli must be docker compatible
