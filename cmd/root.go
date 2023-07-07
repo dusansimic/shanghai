@@ -3,7 +3,7 @@ package cmd
 import "github.com/spf13/cobra"
 
 func init() {
-	rootCmd.PersistentFlags().StringVarP(&file, "file", "f", "shanghi.yaml", "Shangaifile to use")
+	rootCmd.PersistentFlags().StringVarP(&file, "file", "f", "shanghai.yaml", "Shangaifile to use")
 }
 
 var file string
