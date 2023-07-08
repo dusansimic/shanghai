@@ -1,8 +1,9 @@
 package libshg
 
 import (
-	"bytes"
 	"fmt"
+	"log"
+	"os"
 	"os/exec"
 
 	"github.com/juxR/usg"
@@ -29,8 +30,7 @@ func BuildImages(c *Config, f *Shanghaifile, i string) error {
 func buildImage(i Image, e string) error {
 	cmd := exec.Command(e, "build", "-t", i.Tag, "-f", i.ContainerFile, i.Context)
 
-	var stderr bytes.Buffer
-	cmd.Stderr = &stderr
+	cmd.Stderr = NewLogWriter(log.New(os.Stderr, "ERROR: ", log.Ldate|log.Ltime|log.Lshortfile))
 
 	fmt.Printf("Building '%s' ", i.Tag)
 	if err := cmd.Run(); err != nil {
@@ -40,4 +40,19 @@ func buildImage(i Image, e string) error {
 	fmt.Println(ctc.ForegroundGreen, usg.Get.Tick, ctc.Reset)
 
 	return nil
+}
+
+type LogWriter struct {
+	logger *log.Logger
+}
+
+func NewLogWriter(l *log.Logger) *LogWriter {
+	return &LogWriter{
+		logger: l,
+	}
+}
+
+func (lw LogWriter) Write(p []byte) (n int, err error) {
+	lw.logger.Println(string(p))
+	return len(p), nil
 }
