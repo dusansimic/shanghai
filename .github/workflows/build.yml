@@ -15,7 +15,7 @@ jobs:
       - name: Install dependencies
         run: go get -v ./...
       - name: Build
-        run: CGO_ENABLED=0 go build -o shanghai -v ./...
+        run: CGO_ENABLED=0 go build -o shanghai
       - name: Upload artifact
         uses: actions/upload-artifact@v3
         with:
