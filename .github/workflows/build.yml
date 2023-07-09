@@ -16,6 +16,11 @@ jobs:
         run: go get -v ./...
       - name: Build
         run: CGO_ENABLED=0 go build -o shanghai
+      - name: List files
+        run: |
+          pwd
+          ls -la
+          ls -la ./shanghai
       - name: Upload artifact
         uses: actions/upload-artifact@v3
         with:
@@ -35,6 +40,11 @@ jobs:
         with:
           name: binary
           path: ./shanghai
+      - name: List files
+        run: |
+          pwd
+          ls -la
+          ls -la ./shanghai
       - name: Generate completions
         run: ./shanghai completion ${{ matrix.shell }} > ./${{ matrix.shell }}_completion
       - name: Upload artifact
