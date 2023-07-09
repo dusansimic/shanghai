@@ -20,9 +20,9 @@ Building 'example.com/alps-node:latest'  ✔
 
 - [x] Build images
 - [x] Push images
-- [ ] GitHub Actions
-  - [ ] Static binaries
-  - [ ] Completion files
+- [x] GitHub Actions
+  - [x] Static binaries
+  - [x] Completion files
 - [ ] YAML file schema
 
 ## License
