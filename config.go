@@ -1,4 +1,4 @@
-package libshg
+package shanghai
 
 import (
 	"fmt"
@@ -9,6 +9,11 @@ import (
 )
 
 type Config struct {
+	Engine string
+	File   Shanghaifile
+}
+
+type config struct {
 	Engine string `yaml:"engine"`
 }
 
@@ -27,9 +32,13 @@ func ReadConfig(f string) (*Config, error) {
 		return nil, fmt.Errorf("failed to read config file: %w", err)
 	}
 
-	cfg := &Config{}
-	if yaml.Unmarshal(d, &cfg) != nil {
-		return nil, fmt.Errorf("failed to parse config file: %w", err)
+	cfglocal := &config{}
+	if yaml.Unmarshal(d, &cfglocal) != nil {
+		return nil, fmt.Errorf("failed to unmarshal config file: %w", err)
+	}
+
+	cfg := &Config{
+		Engine: cfglocal.Engine,
 	}
 
 	return cfg, nil

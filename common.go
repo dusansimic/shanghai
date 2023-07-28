@@ -1,4 +1,4 @@
-package libshg
+package shanghai
 
 import "fmt"
 
@@ -24,15 +24,15 @@ func walkTreeToFindSubtree(t Node, i string) (Node, bool) {
 	return nil, false
 }
 
-func walkTreeAction(t Node, is MapOfImages, e string, a func(Image, string) error) error {
+func walkTreeAction(lw LogWriters, t Node, is MapOfImages, e string, a func(LogWriters, Image, string) error) error {
 	for k := range t {
-		if err := a(is[k], e); err != nil {
+		if err := a(lw, is[k], e); err != nil {
 			return fmt.Errorf("failed to complete action on image '%s': %w", k, err)
 		}
 
 		// Check if this node is also a subtree
 		if _, ok := t[k].(Node); ok {
-			walkTreeAction(t[k].(Node), is, e, a)
+			walkTreeAction(lw, t[k].(Node), is, e, a)
 		}
 	}
 
