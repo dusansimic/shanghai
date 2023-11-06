@@ -9,12 +9,12 @@ import (
 func BuildImages(c *Config, f *Shanghaifile, lw LogWriters, i string) error {
 	st, stExists := findSubtree(f, i)
 
-	if err := buildImage(lw, f.Images[i], c.Engine); err != nil {
+	if err := buildImage(lw, f, i, c.Engine); err != nil {
 		return fmt.Errorf("failed to build image '%s': %w", i, err)
 	}
 
 	if stExists {
-		if err := walkTreeAction(lw, st, f.Images, c.Engine, buildImage); err != nil {
+		if err := walkTreeAction(lw, f, st, f.Images, c.Engine, buildImage); err != nil {
 			return fmt.Errorf("failed to build images: %w", err)
 		}
 	}
@@ -22,26 +22,39 @@ func BuildImages(c *Config, f *Shanghaifile, lw LogWriters, i string) error {
 	return nil
 }
 
-func buildImage(lw LogWriters, i Image, e string) error {
+func buildImage(lw LogWriters, f *Shanghaifile, i string, e string) error {
+	im := f.Images[i]
+
 	buildArgs := []string{}
-	for k, v := range i.BuildArgs {
+	for k, v := range f.BuildArguments {
 		buildArgs = append(buildArgs, "--build-arg", fmt.Sprintf("%s=%s", k, v))
 	}
+
+	for k, v := range im.BuildArgs {
+		buildArgs = append(buildArgs, "--build-arg", fmt.Sprintf("%s=%s", k, v))
+	}
+
+	envVars := []string{}
+	for k, v := range f.EnvironmentVariables {
+		envVars = append(envVars, fmt.Sprintf("%s=%s", k, v))
+	}
+
 	cmdArgs := []string{"build"}
 	cmdArgs = append(cmdArgs, buildArgs...)
-	cmdArgs = append(cmdArgs, "-t", i.Tag, "-f", i.ContainerFile, i.Context)
+	cmdArgs = append(cmdArgs, envVars...)
+	cmdArgs = append(cmdArgs, "-t", im.Tag, "-f", im.ContainerFile, im.Context)
 
 	cmd := exec.Command(e, cmdArgs...)
 
 	cmd.Stderr = lw.Err
 	cmd.Stdout = lw.Out
 
-	lw.Out.Write([]byte(fmt.Sprintf("Building %s\n", i.Tag)))
+	lw.Out.Write([]byte(fmt.Sprintf("Building %s\n", im.Tag)))
 	if err := cmd.Run(); err != nil {
-		lw.Err.Write([]byte(fmt.Sprintf("failed to run build command for '%s': %s\n", i.Tag, err.Error())))
-		return fmt.Errorf("failed to run command build command for '%s': %w", i.Tag, err)
+		lw.Err.Write([]byte(fmt.Sprintf("failed to run build command for '%s': %s\n", im.Tag, err.Error())))
+		return fmt.Errorf("failed to run command build command for '%s': %w", im.Tag, err)
 	}
-	lw.Out.Write([]byte(fmt.Sprintf("Build done for %s\n", i.Tag)))
+	lw.Out.Write([]byte(fmt.Sprintf("Build done for %s\n", im.Tag)))
 
 	return nil
 }

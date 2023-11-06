@@ -8,8 +8,10 @@ import (
 )
 
 type Shanghaifile struct {
-	Tree   Node        `yaml:"tree"`
-	Images MapOfImages `yaml:"images"`
+	Tree                 Node              `yaml:"tree"`
+	Images               MapOfImages       `yaml:"images"`
+	EnvironmentVariables map[string]string `yaml:"envvars"`
+	BuildArguments       map[string]string `yaml:"buildargs"`
 }
 
 type Node map[string]interface{}
@@ -31,6 +33,8 @@ type shanghaifile struct {
 		Context       string                 `yaml:"context"`
 		BuildArgs     map[string]interface{} `yaml:"buildargs"`
 	} `yaml:"images"`
+	EnvironmentVariables map[string]string `yaml:"envvars"`
+	BuildArguments       map[string]string `yaml:"buildargs"`
 }
 
 func ReadShanghaifile(f string) (*Shanghaifile, error) {
@@ -45,8 +49,10 @@ func ReadShanghaifile(f string) (*Shanghaifile, error) {
 	}
 
 	s := &Shanghaifile{
-		Tree:   siface.Tree,
-		Images: make(MapOfImages),
+		Tree:                 siface.Tree,
+		Images:               make(MapOfImages),
+		EnvironmentVariables: siface.EnvironmentVariables,
+		BuildArguments:       siface.BuildArguments,
 	}
 
 	for k, v := range siface.Images {
@@ -62,7 +68,7 @@ func ReadShanghaifile(f string) (*Shanghaifile, error) {
 			case string:
 				s.Images[k].BuildArgs[k2] = sv
 			default:
-				return nil, fmt.Errorf("incorret value in buildargs (key: %s): %w", k2, err)
+				return nil, fmt.Errorf("incorret value or type in buildargs (key: %s)", k2)
 			}
 		}
 	}

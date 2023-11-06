@@ -41,8 +41,10 @@ func pushCommand(cmd *cobra.Command, args []string) {
 		os.Exit(1)
 	}
 
-	if err := shanghai.PushImages(cfg, shg, logWriters, image); err != nil {
-		fmt.Println(fmt.Errorf("failed to push image: %w", err))
+	s := shanghai.NewSession(cfg, shg, logWriters)
+
+	if err := s.Push(image); err != nil {
+		fmt.Println(fmt.Errorf("failed to build image: %w", err))
 		os.Exit(1)
 	}
 }

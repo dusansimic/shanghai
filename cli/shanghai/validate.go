@@ -35,8 +35,10 @@ func validateCommand(cmd *cobra.Command, args []string) {
 		os.Exit(1)
 	}
 
-	if err := shanghai.ValidateShanghaifile(file, image); err != nil {
-		fmt.Println(fmt.Errorf("failed to validate Shangaifile: %w", err))
+	s := shanghai.NewSession(nil, file, logWriters)
+
+	if err := s.ValidateShanghaifile(image); err != nil {
+		fmt.Println(fmt.Errorf("failed to validate image: %w", err))
 		os.Exit(1)
 	}
 }
