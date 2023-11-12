@@ -43,12 +43,12 @@ func buildImage(lw LogWriters, f *Shanghaifile, im Image, e string) error {
 	cmd.Stderr = lw.Err
 	cmd.Stdout = lw.Out
 
-	lw.Out.Write([]byte(fmt.Sprintf("Building %s\n", im.Tag)))
+	lw.Out.Write([]byte(fmt.Sprintf("Building %s\n", im.Name())))
 	if err := cmd.Run(); err != nil {
-		lw.Err.Write([]byte(fmt.Sprintf("failed to run build command for '%s': %s\n", im.Tag, err.Error())))
-		return fmt.Errorf("failed to run command build command for '%s': %w", im.Tag, err)
+		lw.Err.Write([]byte(fmt.Sprintf("failed to run build command for '%s': %s\n", im.Name(), err.Error())))
+		return fmt.Errorf("failed to run command build command for '%s': %w", im.Name(), err)
 	}
-	lw.Out.Write([]byte(fmt.Sprintf("Build done for %s\n", im.Tag)))
+	lw.Out.Write([]byte(fmt.Sprintf("Build done for %s\n", im.Name())))
 
 	return nil
 }

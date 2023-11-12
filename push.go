@@ -25,7 +25,7 @@ func pushImage(lw LogWriters, f *Shanghaifile, im Image, e string) error {
 
 	lw.Out.Write([]byte(fmt.Sprintf("Pushing %s\n", im.Name())))
 	if err := cmd.Run(); err != nil {
-		lw.Err.Write([]byte(fmt.Sprintf("failed to run push command for '%s': %s\n", im.Tag, err.Error())))
+		lw.Err.Write([]byte(fmt.Sprintf("failed to run push command for '%s': %s\n", im.Name(), err.Error())))
 		return fmt.Errorf("failed to run push command for '%s': %w", im.Name(), err)
 	}
 	lw.Out.Write([]byte(fmt.Sprintf("Push done for %s\n", im.Name())))

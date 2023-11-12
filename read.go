@@ -13,12 +13,8 @@ type Shanghaifile struct {
 	BuildArguments       map[string]string
 }
 
-type treeNode map[string]interface{}
-
-type MapOfImages map[string]Image
-
 type shanghaifile struct {
-	Tree   treeNode `yaml:"tree"`
+	Tree   map[string]interface{} `yaml:"tree"`
 	Images map[string]struct {
 		Tag           string                 `yaml:"tag"`
 		ContainerFile string                 `yaml:"containerfile"`
