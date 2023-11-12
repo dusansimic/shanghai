@@ -8,9 +8,11 @@ import (
 
 func init() {
 	rootCmd.PersistentFlags().StringVarP(&file, "file", "f", "shanghai.yaml", "Shangaifile to use")
+	rootCmd.PersistentFlags().BoolVarP(&this, "this", "t", false, "work only on this image")
 }
 
 var file string
+var this bool
 var logWriters shanghai.LogWriters
 
 var rootCmd = &cobra.Command{

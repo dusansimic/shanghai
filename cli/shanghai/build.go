@@ -13,7 +13,7 @@ func init() {
 }
 
 var buildCmd = &cobra.Command{
-	Use:   "build <image>",
+	Use:   "build [options] <image>",
 	Short: "Build hierarchies of container images",
 	Args:  cobra.MinimumNArgs(1),
 	ValidArgsFunction: func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
@@ -41,7 +41,7 @@ func buildCommand(cmd *cobra.Command, args []string) {
 		os.Exit(1)
 	}
 
-	s := shanghai.NewSession(cfg, shg, logWriters)
+	s := shanghai.NewSession(cfg, shg, this, logWriters)
 
 	if err := s.Build(image); err != nil {
 		fmt.Println(fmt.Errorf("failed to build image: %w", err))
