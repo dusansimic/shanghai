@@ -9,11 +9,8 @@ import (
 )
 
 func init() {
-	buildCmd.PersistentFlags().BoolVarP(&buildThis, "this", "t", false, "Build only this image")
 	rootCmd.AddCommand(buildCmd)
 }
-
-var buildThis bool
 
 var buildCmd = &cobra.Command{
 	Use:   "build [options] <image>",
@@ -44,7 +41,7 @@ func buildCommand(cmd *cobra.Command, args []string) {
 		os.Exit(1)
 	}
 
-	s := shanghai.NewSession(cfg, shg, buildThis, logWriters)
+	s := shanghai.NewSession(cfg, shg, this, logWriters)
 
 	if err := s.Build(image); err != nil {
 		fmt.Println(fmt.Errorf("failed to build image: %w", err))
