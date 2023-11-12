@@ -6,12 +6,20 @@ import (
 )
 
 // BuildImages builds image subtree
-func BuildImages(c *Config, f *Shanghaifile, lw LogWriters, i string) error {
-	is := f.Tree.PreorderFrom(i)
+func BuildImages(c *Config, f *Shanghaifile, this bool, lw LogWriters, i string) error {
+	if this {
+		im := f.Tree.Find(i)
 
-	for _, im := range is {
 		if err := buildImage(lw, f, im, c.Engine); err != nil {
 			return fmt.Errorf("failed to build image '%s': %w", i, err)
+		}
+	} else {
+		is := f.Tree.PreorderFrom(i)
+
+		for _, im := range is {
+			if err := buildImage(lw, f, im, c.Engine); err != nil {
+				return fmt.Errorf("failed to build image '%s': %w", i, err)
+			}
 		}
 	}
 
