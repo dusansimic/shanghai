@@ -25,9 +25,5 @@ func readShanghaifile(image string) (*shanghai.Shanghaifile, error) {
 		return nil, err
 	}
 
-	if err := shanghai.ValidateShanghaifile(file, image); err != nil {
-		return nil, fmt.Errorf("invalid Shanghaifile: %w", err)
-	}
-
 	return file, nil
 }

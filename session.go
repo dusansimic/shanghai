@@ -3,7 +3,6 @@ package shanghai
 type Session interface {
 	Build(i string) error
 	Push(i string) error
-	ValidateShanghaifile(i string) error
 }
 
 type session struct {
@@ -26,8 +25,4 @@ func (s *session) Build(i string) error {
 
 func (s *session) Push(i string) error {
 	return PushImages(s.c, s.f, s.l, i)
-}
-
-func (s *session) ValidateShanghaifile(i string) error {
-	return ValidateShanghaifile(s.f, i)
 }

@@ -8,25 +8,17 @@ import (
 )
 
 type Shanghaifile struct {
-	Tree                 Node              `yaml:"tree"`
-	Images               MapOfImages       `yaml:"images"`
-	EnvironmentVariables map[string]string `yaml:"envvars"`
-	BuildArguments       map[string]string `yaml:"buildargs"`
+	Tree                 Tree
+	EnvironmentVariables map[string]string
+	BuildArguments       map[string]string
 }
 
-type Node map[string]interface{}
+type treeNode map[string]interface{}
 
 type MapOfImages map[string]Image
 
-type Image struct {
-	Tag           string            `yaml:"tag"`
-	ContainerFile string            `yaml:"containerfile"`
-	Context       string            `yaml:"context"`
-	BuildArgs     map[string]string `yaml:"buildargs"`
-}
-
 type shanghaifile struct {
-	Tree   Node `yaml:"tree"`
+	Tree   treeNode `yaml:"tree"`
 	Images map[string]struct {
 		Tag           string                 `yaml:"tag"`
 		ContainerFile string                 `yaml:"containerfile"`
@@ -49,28 +41,26 @@ func ReadShanghaifile(f string) (*Shanghaifile, error) {
 	}
 
 	s := &Shanghaifile{
-		Tree:                 siface.Tree,
-		Images:               make(MapOfImages),
 		EnvironmentVariables: siface.EnvironmentVariables,
 		BuildArguments:       siface.BuildArguments,
 	}
 
-	for k, v := range siface.Images {
-		s.Images[k] = Image{
-			Tag:           v.Tag,
-			ContainerFile: v.ContainerFile,
-			Context:       v.Context,
-			BuildArgs:     make(map[string]string),
-		}
+	s.Tree = NewTree()
 
+	for k, v := range siface.Images {
+		ba := make(map[string]string)
 		for k2, v2 := range v.BuildArgs {
 			switch sv := v2.(type) {
 			case string:
-				s.Images[k].BuildArgs[k2] = sv
+				ba[k2] = sv
 			default:
 				return nil, fmt.Errorf("incorret value or type in buildargs (key: %s)", k2)
 			}
 		}
+
+		i := NewImage(k, v.Tag, v.ContainerFile, v.Context, ba)
+
+		s.Tree.Add(i, k)
 	}
 
 	return s, nil

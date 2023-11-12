@@ -7,30 +7,24 @@ import (
 
 // BuildImages builds image subtree
 func BuildImages(c *Config, f *Shanghaifile, lw LogWriters, i string) error {
-	st, stExists := findSubtree(f, i)
+	is := f.Tree.PreorderFrom(i)
 
-	if err := buildImage(lw, f, i, c.Engine); err != nil {
-		return fmt.Errorf("failed to build image '%s': %w", i, err)
-	}
-
-	if stExists {
-		if err := walkTreeAction(lw, f, st, f.Images, c.Engine, buildImage); err != nil {
-			return fmt.Errorf("failed to build images: %w", err)
+	for _, im := range is {
+		if err := buildImage(lw, f, im, c.Engine); err != nil {
+			return fmt.Errorf("failed to build image '%s': %w", i, err)
 		}
 	}
 
 	return nil
 }
 
-func buildImage(lw LogWriters, f *Shanghaifile, i string, e string) error {
-	im := f.Images[i]
-
+func buildImage(lw LogWriters, f *Shanghaifile, im Image, e string) error {
 	buildArgs := []string{}
 	for k, v := range f.BuildArguments {
 		buildArgs = append(buildArgs, "--build-arg", fmt.Sprintf("%s=%s", k, v))
 	}
 
-	for k, v := range im.BuildArgs {
+	for k, v := range im.BuildArgs() {
 		buildArgs = append(buildArgs, "--build-arg", fmt.Sprintf("%s=%s", k, v))
 	}
 
@@ -42,7 +36,7 @@ func buildImage(lw LogWriters, f *Shanghaifile, i string, e string) error {
 	cmdArgs := []string{"build"}
 	cmdArgs = append(cmdArgs, buildArgs...)
 	cmdArgs = append(cmdArgs, envVars...)
-	cmdArgs = append(cmdArgs, "-t", im.Tag, "-f", im.ContainerFile, im.Context)
+	cmdArgs = append(cmdArgs, "-t", im.Tag(), "-f", im.ContainerfileName(), im.Context())
 
 	cmd := exec.Command(e, cmdArgs...)
 
