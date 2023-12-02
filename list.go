@@ -18,7 +18,7 @@ func ListImages(f string) ([]string, error) {
 		return nil, fmt.Errorf("failed to unmarshal file: %w", err)
 	}
 
-	is := file.Tree.Preorder()
+	is := file.Tree.Nodes()
 	keys := make([]string, len(is))
 	for _, im := range is {
 		keys = append(keys, im.Name())

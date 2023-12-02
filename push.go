@@ -6,7 +6,7 @@ import (
 )
 
 func PushImages(c *Config, f *Shanghaifile, lw LogWriters, i string) error {
-	is := f.Tree.PreorderFrom(i)
+	is := f.Tree.Topological(i)
 
 	for _, im := range is {
 		if err := pushImage(lw, f, im, c.Engine); err != nil {

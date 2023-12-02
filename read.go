@@ -8,18 +8,18 @@ import (
 )
 
 type Shanghaifile struct {
-	Tree                 Tree
+	Tree                 PolyTree
 	EnvironmentVariables map[string]string
 	BuildArguments       map[string]string
 }
 
 type shanghaifile struct {
-	Tree   map[string]interface{} `yaml:"tree"`
 	Images map[string]struct {
 		Tag           string                 `yaml:"tag"`
 		ContainerFile string                 `yaml:"containerfile"`
 		Context       string                 `yaml:"context"`
 		BuildArgs     map[string]interface{} `yaml:"buildargs"`
+		Parents       []string               `yaml:"parents"`
 	} `yaml:"images"`
 	EnvironmentVariables map[string]string `yaml:"envvars"`
 	BuildArguments       map[string]string `yaml:"buildargs"`
@@ -41,7 +41,7 @@ func ReadShanghaifile(f string) (*Shanghaifile, error) {
 		BuildArguments:       siface.BuildArguments,
 	}
 
-	s.Tree = NewTree()
+	s.Tree = NewPolyTree()
 
 	for k, v := range siface.Images {
 		ba := make(map[string]string)
@@ -56,7 +56,9 @@ func ReadShanghaifile(f string) (*Shanghaifile, error) {
 
 		i := NewImage(k, v.Tag, v.ContainerFile, v.Context, ba)
 
-		s.Tree.Add(i, k)
+		if err := s.Tree.Add(i); err != nil {
+			return nil, fmt.Errorf("duplicate image in tree '%s'", i.Name())
+		}
 	}
 
 	return s, nil
