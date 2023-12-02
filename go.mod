@@ -1,6 +1,6 @@
 module shanghai
 
-go 1.20
+go 1.21
 
 require (
 	github.com/juxR/usg v0.0.0-20160918114137-cb52eabb3d84
