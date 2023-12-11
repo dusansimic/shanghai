@@ -18,13 +18,14 @@ type image struct {
 	parents       []string
 }
 
-func NewImage(n, t, cf, c string, ba map[string]string) Image {
+func NewImage(n, t, cf, c string, ba map[string]string, ps []string) Image {
 	return &image{
 		name:          n,
 		tag:           t,
 		containerFile: cf,
 		context:       c,
 		buildArgs:     ba,
+		parents:       ps,
 	}
 }
 
@@ -50,4 +51,8 @@ func (i *image) BuildArgs() map[string]string {
 
 func (i *image) Parents() []string {
 	return i.parents
+}
+
+func (i *image) String() string {
+	return i.name
 }

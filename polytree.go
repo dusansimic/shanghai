@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"shanghai/stack"
 	"slices"
+	"strings"
 )
 
 type PolyTree interface {
@@ -88,7 +89,7 @@ func (pt *polytree) Topological(i string) []Image {
 
 	for !s.Empty() {
 		n, _ := s.Pop()
-		is = append(is, *n)
+		is = append(is, n)
 	}
 
 	return is
@@ -98,7 +99,7 @@ func topological(n *ptNode, s stack.Stack[Image]) {
 	for _, c := range n.children {
 		topological(c, s)
 	}
-	s.Push(&n.image)
+	s.Push(n.image)
 }
 
 func (pt *polytree) Nodes() []Image {
@@ -109,4 +110,30 @@ func (pt *polytree) Nodes() []Image {
 	}
 
 	return is
+}
+
+func (pt *polytree) String() string {
+	var sb strings.Builder
+	sb.WriteString("[")
+
+	for k, v := range pt.m {
+		sb.WriteString(" ")
+		sb.WriteString(k)
+		sb.WriteString(" c{")
+		for _, c := range v.children {
+			sb.WriteString(" ")
+			sb.WriteString(c.image.Name())
+		}
+		sb.WriteString(" }")
+		sb.WriteString(" p{")
+		for _, p := range v.parents {
+			sb.WriteString(" ")
+			sb.WriteString(p.image.Name())
+		}
+		sb.WriteString(" }")
+	}
+
+	sb.WriteString(" ]")
+
+	return sb.String()
 }

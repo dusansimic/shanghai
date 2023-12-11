@@ -15,11 +15,11 @@ type Shanghaifile struct {
 
 type shanghaifile struct {
 	Images map[string]struct {
-		Tag           string                 `yaml:"tag"`
-		ContainerFile string                 `yaml:"containerfile"`
-		Context       string                 `yaml:"context"`
-		BuildArgs     map[string]interface{} `yaml:"buildargs"`
-		Parents       []string               `yaml:"parents"`
+		Tag           string
+		ContainerFile string
+		Context       string
+		BuildArgs     map[string]interface{}
+		Parents       []string
 	} `yaml:"images"`
 	EnvironmentVariables map[string]string `yaml:"envvars"`
 	BuildArguments       map[string]string `yaml:"buildargs"`
@@ -54,7 +54,7 @@ func ReadShanghaifile(f string) (*Shanghaifile, error) {
 			}
 		}
 
-		i := NewImage(k, v.Tag, v.ContainerFile, v.Context, ba)
+		i := NewImage(k, v.Tag, v.ContainerFile, v.Context, ba, v.Parents)
 
 		if err := s.Tree.Add(i); err != nil {
 			return nil, fmt.Errorf("duplicate image in tree '%s'", i.Name())
