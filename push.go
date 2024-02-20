@@ -10,7 +10,7 @@ func PushImages(c *Config, f *Shanghaifile, this bool, lw LogWriters, i string) 
 	if this {
 		im := f.Tree.Get(i)
 
-		if !strings.HasPrefix(im.Tag(), "localhost/") {
+		if strings.HasPrefix(im.Tag(), "localhost/") {
 			return nil
 		}
 
