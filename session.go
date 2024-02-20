@@ -26,5 +26,5 @@ func (s *session) Build(i string) error {
 }
 
 func (s *session) Push(i string) error {
-	return PushImages(s.c, s.f, s.l, i)
+	return PushImages(s.c, s.f, s.this, s.l, i)
 }

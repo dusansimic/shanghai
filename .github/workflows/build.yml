@@ -7,9 +7,9 @@ jobs:
     name: Build binary
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Setup Go
-        uses: actions/setup-go@v4
+        uses: actions/setup-go@v5
         with:
           go-version: "1.21"
       - name: Install dependencies
@@ -17,7 +17,7 @@ jobs:
       - name: Build
         run: cd cmd/shanghai && CGO_ENABLED=0 go build -o ../../shanghai
       - name: Upload artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: binary
           path: shanghai
@@ -29,9 +29,9 @@ jobs:
       matrix:
         shell: [bash, zsh, fish, powershell]
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Download artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: binary
       - name: Change permissions
@@ -39,7 +39,7 @@ jobs:
       - name: Generate completions
         run: ./shanghai completion ${{ matrix.shell }} > ./${{ matrix.shell }}_completion
       - name: Upload artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.shell }}-completions
           path: ./${{ matrix.shell }}_completion

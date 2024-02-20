@@ -6,16 +6,28 @@ import (
 	"strings"
 )
 
-func PushImages(c *Config, f *Shanghaifile, lw LogWriters, i string) error {
-	is := f.Tree.Topological(i)
+func PushImages(c *Config, f *Shanghaifile, this bool, lw LogWriters, i string) error {
+	if this {
+		im := f.Tree.Get(i)
 
-	for _, im := range is {
-		if strings.HasPrefix(im.Tag(), "localhost/") {
-			continue
+		if !strings.HasPrefix(im.Tag(), "localhost/") {
+			return nil
 		}
 
 		if err := pushImage(lw, f, im, c.Engine); err != nil {
 			return fmt.Errorf("failed to push image '%s': %w", i, err)
+		}
+	} else {
+		is := f.Tree.Topological(i)
+
+		for _, im := range is {
+			if strings.HasPrefix(im.Tag(), "localhost/") {
+				continue
+			}
+
+			if err := pushImage(lw, f, im, c.Engine); err != nil {
+				return fmt.Errorf("failed to push image '%s': %w", i, err)
+			}
 		}
 	}
 
