@@ -1,21 +1,23 @@
-package shanghai
+package polytree
 
 import (
 	"fmt"
-	"shanghai/stack"
 	"slices"
 	"strings"
+
+	"github.com/dusansimic/shanghai/image"
+	"github.com/dusansimic/shanghai/stack"
 )
 
 type PolyTree interface {
-	Add(Image) error
-	Get(string) Image
-	Topological(string) []Image
-	Nodes() []Image
+	Add(image.Image) error
+	Get(string) image.Image
+	Topological(string) []image.Image
+	Nodes() []image.Image
 }
 
 type ptNode struct {
-	image    Image
+	image    image.Image
 	children []*ptNode
 	parents  []*ptNode
 }
@@ -30,7 +32,7 @@ func NewPolyTree() PolyTree {
 	}
 }
 
-func (pt *polytree) Add(i Image) error {
+func (pt *polytree) Add(i image.Image) error {
 	// If image already exists in a tree, return an error
 	if inTree(pt, i.Name()) {
 		return fmt.Errorf("image already exists in tree")
@@ -70,7 +72,7 @@ func inTree(pt *polytree, i string) bool {
 	return ok
 }
 
-func (pt *polytree) Get(i string) Image {
+func (pt *polytree) Get(i string) image.Image {
 	if inTree(pt, i) {
 		n := pt.m[i]
 		return n.image
@@ -78,13 +80,13 @@ func (pt *polytree) Get(i string) Image {
 	return nil
 }
 
-func (pt *polytree) Topological(i string) []Image {
+func (pt *polytree) Topological(i string) []image.Image {
 	if !inTree(pt, i) {
 		return nil
 	}
 
-	is := []Image{}
-	s := stack.NewStack[Image]()
+	is := []image.Image{}
+	s := stack.NewStack[image.Image]()
 	topological(pt.m[i], s)
 
 	for !s.Empty() {
@@ -95,15 +97,15 @@ func (pt *polytree) Topological(i string) []Image {
 	return is
 }
 
-func topological(n *ptNode, s stack.Stack[Image]) {
+func topological(n *ptNode, s stack.Stack[image.Image]) {
 	for _, c := range n.children {
 		topological(c, s)
 	}
 	s.Push(n.image)
 }
 
-func (pt *polytree) Nodes() []Image {
-	is := []Image{}
+func (pt *polytree) Nodes() []image.Image {
+	is := []image.Image{}
 
 	for _, n := range pt.m {
 		is = append(is, n.image)

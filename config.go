@@ -5,12 +5,13 @@ import (
 	"os"
 
 	"github.com/adrg/xdg"
+	"github.com/dusansimic/shanghai/file"
 	"gopkg.in/yaml.v3"
 )
 
 type Config struct {
 	Engine string
-	File   Shanghaifile
+	File   file.File
 }
 
 type config struct {

@@ -1,6 +1,6 @@
 package main
 
-import "shanghai/cli/shanghai"
+import "github.com/dusansimic/shanghai/cli/shanghai"
 
 func main() {
 	shanghai.Execute()

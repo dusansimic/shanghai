@@ -2,7 +2,9 @@ package shanghai
 
 import (
 	"fmt"
-	"shanghai"
+
+	"github.com/dusansimic/shanghai"
+	"github.com/dusansimic/shanghai/file"
 )
 
 func readConfig() (*shanghai.Config, error) {
@@ -19,11 +21,11 @@ func readConfig() (*shanghai.Config, error) {
 	return c, nil
 }
 
-func readShanghaifile(image string) (*shanghai.Shanghaifile, error) {
-	file, err := shanghai.ReadShanghaifile(file)
+func readShanghaifile(image string) (*file.File, error) {
+	filestruct, err := file.Read(filename)
 	if err != nil {
 		return nil, err
 	}
 
-	return file, nil
+	return filestruct, nil
 }

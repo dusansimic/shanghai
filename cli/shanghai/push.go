@@ -3,8 +3,8 @@ package shanghai
 import (
 	"fmt"
 	"os"
-	"shanghai"
 
+	"github.com/dusansimic/shanghai"
 	"github.com/spf13/cobra"
 )
 
@@ -17,7 +17,7 @@ var pushCmd = &cobra.Command{
 	Short: "Push hierarchies of container images",
 	Args:  cobra.MinimumNArgs(1),
 	ValidArgsFunction: func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
-		l, err := shanghai.ListImages(file)
+		l, err := shanghai.ListImages(filename)
 		if err != nil {
 			return nil, cobra.ShellCompDirectiveError
 		}

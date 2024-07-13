@@ -1,8 +1,8 @@
-package shanghai
+package image
 
 type Image interface {
 	Name() string
-	Tag() string
+	Tags() []string
 	ContainerfileName() string
 	Context() string
 	BuildArgs() map[string]string
@@ -11,17 +11,17 @@ type Image interface {
 
 type image struct {
 	name          string
-	tag           string
+	tags          []string
 	containerFile string
 	context       string
 	buildArgs     map[string]string
 	parents       []string
 }
 
-func NewImage(n, t, cf, c string, ba map[string]string, ps []string) Image {
+func NewImage(n string, ts []string, cf, c string, ba map[string]string, ps []string) Image {
 	return &image{
 		name:          n,
-		tag:           t,
+		tags:          ts,
 		containerFile: cf,
 		context:       c,
 		buildArgs:     ba,
@@ -33,8 +33,8 @@ func (i *image) Name() string {
 	return i.name
 }
 
-func (i *image) Tag() string {
-	return i.tag
+func (i *image) Tags() []string {
+	return i.tags
 }
 
 func (i *image) ContainerfileName() string {

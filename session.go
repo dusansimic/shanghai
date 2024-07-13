@@ -1,5 +1,7 @@
 package shanghai
 
+import "github.com/dusansimic/shanghai/file"
+
 type Session interface {
 	Build(i string) error
 	Push(i string) error
@@ -7,12 +9,12 @@ type Session interface {
 
 type session struct {
 	c    *Config
-	f    *Shanghaifile
+	f    *file.File
 	l    LogWriters
 	this bool
 }
 
-func NewSession(c *Config, f *Shanghaifile, this bool, l LogWriters) Session {
+func NewSession(c *Config, f *file.File, this bool, l LogWriters) Session {
 	return &session{
 		c:    c,
 		f:    f,

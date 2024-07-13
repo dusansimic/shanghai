@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/dusansimic/shanghai/file"
 	"gopkg.in/yaml.v3"
 )
 
@@ -13,7 +14,7 @@ func ListImages(f string) ([]string, error) {
 		return nil, fmt.Errorf("failed to read file: %w", err)
 	}
 
-	var file Shanghaifile
+	var file file.File
 	if err := yaml.Unmarshal(b, &file); err != nil {
 		return nil, fmt.Errorf("failed to unmarshal file: %w", err)
 	}

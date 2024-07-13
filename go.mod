@@ -1,4 +1,4 @@
-module shanghai
+module github.com/dusansimic/shanghai
 
 go 1.21
 
