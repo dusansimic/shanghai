@@ -53,7 +53,7 @@ func Read(f string) (*File, error) {
 			case string:
 				ba[k2] = sv
 			case int:
-				ba[k2] = string(sv)
+				ba[k2] = fmt.Sprint(sv)
 			default:
 				return nil, fmt.Errorf("incorret value or type in buildargs (key: %s)", k2)
 			}
