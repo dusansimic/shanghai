@@ -20,11 +20,12 @@ func PushImages(c *Config, f *file.File, this bool, lw LogWriters, i string) err
 	for _, im := range ims {
 		for _, tag := range im.Tags() {
 			if strings.HasPrefix(tag, "localhost/") {
+				lw.Out.Write([]byte(fmt.Sprintf("Skipping tag '%s'\n", tag)))
 				continue
 			}
 
-			if err := pushImage(lw, im, c.Engine); err != nil {
-				return fmt.Errorf("failed to push image '%s': %w", i, err)
+			if err := pushImage(lw, tag, c.Engine); err != nil {
+				return fmt.Errorf("failed to push tag '%s': %w", tag, err)
 			}
 		}
 	}
@@ -32,20 +33,18 @@ func PushImages(c *Config, f *file.File, this bool, lw LogWriters, i string) err
 	return nil
 }
 
-func pushImage(lw LogWriters, im image.Image, e string) error {
-	for _, tag := range im.Tags() {
-		cmd := exec.Command(e, "push", tag)
+func pushImage(lw LogWriters, t string, e string) error {
+	cmd := exec.Command(e, "push", t)
 
-		cmd.Stderr = lw.Err
-		cmd.Stdout = lw.Out
+	cmd.Stderr = lw.Err
+	cmd.Stdout = lw.Out
 
-		lw.Out.Write([]byte(fmt.Sprintf("Pushing %s\n", im.Name())))
-		if err := cmd.Run(); err != nil {
-			lw.Err.Write([]byte(fmt.Sprintf("failed to run push command for '%s': %s\n", im.Name(), err.Error())))
-			return fmt.Errorf("failed to run push command for '%s': %w", im.Name(), err)
-		}
-		lw.Out.Write([]byte(fmt.Sprintf("Push done for %s\n", im.Name())))
+	lw.Out.Write([]byte(fmt.Sprintf("Pushing %s\n", t)))
+	if err := cmd.Run(); err != nil {
+		lw.Err.Write([]byte(fmt.Sprintf("failed to run push command for '%s': %s\n", t, err.Error())))
+		return fmt.Errorf("failed to run push command for '%s': %w", t, err)
 	}
+	lw.Out.Write([]byte(fmt.Sprintf("Push done for %s\n", t)))
 
 	return nil
 }
