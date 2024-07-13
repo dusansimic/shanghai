@@ -8,25 +8,35 @@ type Session interface {
 }
 
 type session struct {
-	c    *Config
-	f    *file.File
-	l    LogWriters
-	this bool
+	c     *Config
+	f     *file.File
+	l     LogWriters
+	this  bool
+	group bool
 }
 
-func NewSession(c *Config, f *file.File, this bool, l LogWriters) Session {
+func NewSession(c *Config, f *file.File, this, group bool, l LogWriters) Session {
 	return &session{
-		c:    c,
-		f:    f,
-		l:    l,
-		this: this,
+		c:     c,
+		f:     f,
+		l:     l,
+		this:  this,
+		group: group,
 	}
 }
 
-func (s *session) Build(i string) error {
-	return BuildImages(s.c, s.f, s.this, s.l, i)
+func (s *session) Build(n string) error {
+	if s.group {
+		return BuildGroup(s, n)
+	} else {
+		return BuildImages(s, n)
+	}
 }
 
-func (s *session) Push(i string) error {
-	return PushImages(s.c, s.f, s.this, s.l, i)
+func (s *session) Push(n string) error {
+	if s.group {
+		return PushGroup(s, n)
+	} else {
+		return PushImages(s, n)
+	}
 }

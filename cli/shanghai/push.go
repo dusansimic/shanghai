@@ -13,17 +13,11 @@ func init() {
 }
 
 var pushCmd = &cobra.Command{
-	Use:   "push <image>",
-	Short: "Push hierarchies of container images",
-	Args:  cobra.MinimumNArgs(1),
-	ValidArgsFunction: func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
-		l, err := shanghai.ListImages(filename)
-		if err != nil {
-			return nil, cobra.ShellCompDirectiveError
-		}
-		return l, cobra.ShellCompDirectiveNoFileComp
-	},
-	Run: pushCommand,
+	Use:               "push <image>",
+	Short:             "Push hierarchies of container images",
+	Args:              cobra.MinimumNArgs(1),
+	ValidArgsFunction: imageCompletions,
+	Run:               pushCommand,
 }
 
 func pushCommand(cmd *cobra.Command, args []string) {
@@ -41,7 +35,7 @@ func pushCommand(cmd *cobra.Command, args []string) {
 		os.Exit(1)
 	}
 
-	s := shanghai.NewSession(cfg, shg, this, logWriters)
+	s := shanghai.NewSession(cfg, shg, this, group, logWriters)
 
 	if err := s.Push(image); err != nil {
 		fmt.Println(fmt.Errorf("failed to build image: %w", err))

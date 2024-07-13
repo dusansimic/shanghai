@@ -10,12 +10,14 @@ import (
 )
 
 type File struct {
+	Groups    map[string][]string
 	Tree      polytree.PolyTree
 	EnvVars   map[string]string
 	BuildArgs map[string]string
 }
 
 type file struct {
+	Groups map[string][]string
 	Images map[string]struct {
 		Tag           string
 		Tags          []string
@@ -40,6 +42,7 @@ func Read(f string) (*File, error) {
 	}
 
 	s := &File{
+		Groups:    file.Groups,
 		EnvVars:   file.EnvVars,
 		BuildArgs: file.BuildArgs,
 	}

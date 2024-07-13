@@ -9,24 +9,35 @@ import (
 )
 
 // BuildImages builds image subtree
-func BuildImages(c *Config, f *file.File, this bool, lw LogWriters, i string) error {
+func BuildImages(s *session, i string) error {
 	var ims []image.Image
-	if this {
-		ims = []image.Image{f.Tree.Get(i)}
+	if s.this {
+		ims = []image.Image{s.f.Tree.Get(i)}
 	} else {
-		ims = f.Tree.Topological(i)
+		ims = s.f.Tree.Topological(i)
 	}
 
 	for _, im := range ims {
 		tags := im.Tags()
-		if err := buildImage(lw, f, im, tags[0], c.Engine); err != nil {
+		if err := buildImage(s.l, s.f, im, tags[0], s.c.Engine); err != nil {
 			return fmt.Errorf("failed to build image '%s': %w", i, err)
 		}
 
 		for _, tag := range tags[1:] {
-			if err := tagImage(lw, tags[0], tag, c.Engine); err != nil {
+			if err := tagImage(s.l, tags[0], tag, s.c.Engine); err != nil {
 				return fmt.Errorf("failed to tag image: '%s': %w", tag, err)
 			}
+		}
+	}
+
+	return nil
+}
+
+func BuildGroup(s *session, g string) error {
+	names := s.f.Groups[g]
+	for _, name := range names {
+		if err := BuildImages(s, name); err != nil {
+			return fmt.Errorf("failed to build image from group '%s': %w", g, err)
 		}
 	}
 
