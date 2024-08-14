@@ -3,11 +3,11 @@ package shanghai
 import (
 	"fmt"
 
-	"github.com/dusansimic/shanghai/file"
+	yamlfile "github.com/dusansimic/shanghai/file/yaml"
 )
 
 func ListImages(f string) ([]string, error) {
-	fileStruct, err := file.Read(f)
+	fileStruct, err := yamlfile.New().Read(f)
 	if err != nil {
 		return nil, fmt.Errorf("failed to read file: %w", err)
 	}
@@ -22,7 +22,7 @@ func ListImages(f string) ([]string, error) {
 }
 
 func ListGroups(f string) ([]string, error) {
-	fileStruct, err := file.Read(f)
+	fileStruct, err := yamlfile.New().Read(f)
 	if err != nil {
 		return nil, fmt.Errorf("failed to read file: %w", err)
 	}

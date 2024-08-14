@@ -5,6 +5,7 @@ import (
 
 	"github.com/dusansimic/shanghai"
 	"github.com/dusansimic/shanghai/file"
+	yamlfile "github.com/dusansimic/shanghai/file/yaml"
 	"github.com/spf13/cobra"
 )
 
@@ -23,7 +24,7 @@ func readConfig() (*shanghai.Config, error) {
 }
 
 func readShanghaifile(image string) (*file.File, error) {
-	filestruct, err := file.Read(filename)
+	filestruct, err := yamlfile.New().Read(filename)
 	if err != nil {
 		return nil, err
 	}
