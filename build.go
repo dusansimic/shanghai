@@ -10,15 +10,21 @@ import (
 
 // BuildImages builds image subtree
 func BuildImages(s *session, i string) error {
-	var ims []image.Image
-	if s.this {
-		ims = []image.Image{s.f.Tree.Get(i)}
-	} else {
-		ims = s.f.Tree.Topological(i)
-	}
+	ims := getImages(s, i)
 
 	for _, im := range ims {
 		tags := im.Tags()
+
+		if s.dryRun {
+			// In dry-run mode, just print what would be done
+			fmt.Printf("DRY RUN: building image '%s'\n", im.Name())
+
+			for _, tag := range tags {
+				fmt.Printf("DRY RUN: tagging image '%s' as '%s'\n", im.Name(), tag)
+			}
+			continue
+		}
+
 		if err := buildImage(s.l, s.f, im, tags[0], s.c.Engine); err != nil {
 			return fmt.Errorf("failed to build image '%s': %w", i, err)
 		}
@@ -36,6 +42,16 @@ func BuildImages(s *session, i string) error {
 func BuildGroup(s *session, g string) error {
 	names := s.f.Groups[g]
 	for _, name := range names {
+		if s.dryRun {
+			// In dry-run mode, just print what would be done
+			fmt.Printf("DRY RUN: building group '%s'\n", name)
+			if err := BuildImages(s, name); err != nil {
+				return fmt.Errorf("failed to build image from group '%s' during dry run: %w", g, err)
+			}
+
+			continue
+		}
+
 		if err := BuildImages(s, name); err != nil {
 			return fmt.Errorf("failed to build image from group '%s': %w", g, err)
 		}

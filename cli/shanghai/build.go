@@ -35,7 +35,7 @@ func buildCommand(cmd *cobra.Command, args []string) {
 		os.Exit(1)
 	}
 
-	s := shanghai.NewSession(cfg, shg, this, group, logWriters)
+	s := shanghai.NewSession(cfg, shg, this, group, dryRun, logWriters)
 
 	if err := s.Build(image); err != nil {
 		fmt.Println(fmt.Errorf("failed to build image: %w", err))

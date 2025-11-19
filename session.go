@@ -8,20 +8,22 @@ type Session interface {
 }
 
 type session struct {
-	c     *Config
-	f     *file.File
-	l     LogWriters
-	this  bool
-	group bool
+	c      *Config
+	f      *file.File
+	l      LogWriters
+	this   bool
+	group  bool
+	dryRun bool
 }
 
-func NewSession(c *Config, f *file.File, this, group bool, l LogWriters) Session {
+func NewSession(c *Config, f *file.File, this, group, dryRun bool, l LogWriters) Session {
 	return &session{
-		c:     c,
-		f:     f,
-		l:     l,
-		this:  this,
-		group: group,
+		c:      c,
+		f:      f,
+		l:      l,
+		this:   this,
+		group:  group,
+		dryRun: dryRun,
 	}
 }
 

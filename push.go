@@ -4,20 +4,23 @@ import (
 	"fmt"
 	"os/exec"
 	"strings"
-
-	"github.com/dusansimic/shanghai/image"
 )
 
 func PushImages(s *session, i string) error {
-	var ims []image.Image
-	if s.this {
-		ims = []image.Image{s.f.Tree.Get(i)}
-	} else {
-		ims = s.f.Tree.Topological(i)
-	}
+	ims := getImages(s, i)
 
 	for _, im := range ims {
-		for _, tag := range im.Tags() {
+		tags := im.Tags()
+
+		if s.dryRun {
+			// In dry-run mode, just print what would be done
+			for _, tag := range tags {
+				fmt.Printf("DRY RUN: pushing image '%s'\n", tag)
+			}
+			continue
+		}
+
+		for _, tag := range tags {
 			if strings.HasPrefix(tag, "localhost/") {
 				s.l.Out.Write([]byte(fmt.Sprintf("Skipping tag '%s'\n", tag)))
 				continue
@@ -35,6 +38,16 @@ func PushImages(s *session, i string) error {
 func PushGroup(s *session, g string) error {
 	names := s.f.Groups[g]
 	for _, name := range names {
+		if s.dryRun {
+			// In dry-run mode, just print what would be done
+			fmt.Printf("DRY RUN: pushing group '%s'\n", name)
+			if err := PushImages(s, name); err != nil {
+				return fmt.Errorf("failed to push image from group '%s' during dry run: %w", g, err)
+			}
+
+			continue
+		}
+
 		if err := PushImages(s, name); err != nil {
 			return fmt.Errorf("failed to push image from group '%s': %w", g, err)
 		}
